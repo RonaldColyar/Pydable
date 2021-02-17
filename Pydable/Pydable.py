@@ -107,22 +107,9 @@ class SqlFunctionality():
 		return books
 
 class MainGuiAndInterface():
-	def __init__(self,master):
-		#reading functionality
-		self.def_obj = DefineObj()
-		self.parse_obj = PdfParserAndWriter()
-		self.book_creation_error = None
-		self.reading = False
-		self.placeholder = 0
-		self.last_line = None
-		self.engine_speed = 125
-		self.engine = pyttsx3.init()
-		self.books = self.parse_obj.sql_obj.all_books() #this will be a list of all books 
-		self.books.insert(0, "Choose a book!!")
 
 
-		#window
-		self.master = master
+	def configure_window(self , master):
 		master.resizable(width = False , height = False)
 		master.grid_rowconfigure(0,weight=1)
 		master.grid_rowconfigure(1,weight=1)
@@ -133,7 +120,7 @@ class MainGuiAndInterface():
 		master.title(string ="Pydable 1.0")
 		master.configure(bg = '#222121')
 
-		#real time words
+	def configure_labels(self,master):
 		self.text_content = tkinter.Message(master,
 			text="words being read will be here",
 			bg ='#222121',
@@ -147,47 +134,61 @@ class MainGuiAndInterface():
 			fg = "#ffffff")
 		self.line_percentage.grid(row = 0 ,column =0,columnspan = 3)
 
-		#buttons
-		self.play_button = tkinter.Button(master, 
-			text="Play",
-			bg ='#3776ab' ,
+	def configure_buttons(self,master):
+		self.play_button = tkinter.Button(master, text="Play",bg ='#3776ab' ,
 			command = self.begin_reading,
 			borderwidth = 0)
 
 		self.define_word_button = tkinter.Button(master  ,
-			text = "Define",
-			bg ='#3776ab',
-			command = self.def_obj.display_word_entry ,
+			text = "Define",bg ='#3776ab',command = self.def_obj.display_word_entry ,
 			borderwidth = 0)
 
 		self.add_book_button = tkinter.Button(master,
-		 text = "Add Book",
-		 bg ='#3776ab',
-		 command = self.parse_obj.display_book_name_entry,
+		 text = "Add Book",bg ='#3776ab',command = self.parse_obj.display_book_name_entry,
 		 borderwidth = 0 )
 
 		self.remove_book_button = tkinter.Button(master ,
-		 text = "Remove Book",
-		 bg = '#8b0000', 
-		 fg = "#ffffff",
+			text = "Remove Book",bg = '#8b0000', fg = "#ffffff",
 		 command= self.display_delete_window,
 		 borderwidth = 0)
-
+	def configure_button_placement(self)
 		self.play_button.grid(row =2 , column = 3, padx = 10)
 		self.define_word_button.grid(row =2, column=2 )
 		self.add_book_button.grid(row = 2, column = 4)
 		self.remove_book_button.grid(row = 3 , column = 2, columnspan = 3)
-		
-
+	def configure_options(self,master):
 		#options
 		self.searchvar = tkinter.StringVar()
 		self.searchvar.set(self.books[0])
-
 		self.menu = tkinter.OptionMenu(master,self.searchvar, *self.books)
 		self.menu.grid(row = 0 ,column =4,columnspan = 2)
 		self.menu.configure(background = '#222121',border = 0 , fg = "#00FF00")
 		self.menu["menu"].config(bg ='#222121',fg = "#00FF00")
 		self.menu["highlightthickness"] = 0
+
+
+
+	def __init__(self,master):
+		#reading functionality
+		self.def_obj = DefineObj()
+		self.parse_obj = PdfParserAndWriter()
+		self.book_creation_error = None
+		self.reading = False
+		self.placeholder = 0
+		self.last_line = None
+		self.engine_speed = 125
+		self.engine = pyttsx3.init()
+		self.books = self.parse_obj.sql_obj.all_books() #this will be a list of all books 
+		self.books.insert(0, "Choose a book!!")
+		self.master = master
+		self.configure_window(master)
+		self.configure_labels(master)
+		self.configure_buttons(master)
+		self.configure_button_placement()
+		self.configure_options()
+	
+
+
 
 	def display_delete_window(self):
 		root = tkinter.Toplevel()
